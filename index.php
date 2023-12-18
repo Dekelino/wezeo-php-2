@@ -9,19 +9,24 @@ $timestamp = date("Y-m-d H:i:s");
 
 $jsonFilePath = "allArrivals.json";
 
+//type declarations = https://www.amitmerchant.com/php-type-declarations/
+// typed properties = https://www.phptutorial.net/php-oop/php-typed-properties/
+//return types = https://dev.to/karleb/return-types-in-php-3fip
+
+
 // Class for logging student arrivals
 class ArrivalLogger
 {
-    private $jsonFileArrivalLogger;
+    private string $jsonFileArrivalLogger;
 
     // Constructor to set the file path in ArrivalLogger class
-    public function __construct($jsonFilePathConstruct)
+    public function __construct(string $jsonFilePathConstruct)
     {
         $this->jsonFileArrivalLogger = $jsonFilePathConstruct;
     }
 
     // Check if there is a delay in arrival time
-    private function isDelay($timestamp)
+    private function isDelay(string $timestamp):bool
     {
         // Convert timestamp to Unix timestamp for comparison
         $timestampUnix = strtotime($timestamp); // strtotime - https://www.php.net/manual/en/function.strtotime.php
@@ -34,7 +39,7 @@ class ArrivalLogger
     }
 
     // Method to log arrival data
-    public function logArrival($name, $timestamp)
+    public function logArrival( string $name, string $timestamp) :void
     {
         // Check for delays and die if found
         if ($this->isDelay($timestamp)) {
@@ -69,16 +74,16 @@ class ArrivalLogger
 // Class for logging student data - name+counter
 class StudentLogger
 {
-    private $jsonFileStudentLogger;
+    private string $jsonFileStudentLogger;
 
     // Constructor to set the file path in class StudentLogger
-    public function __construct($jsonFilePath)
+    public function __construct( string $jsonFilePath)
     {
         $this->jsonFileStudentLogger = $jsonFilePath;
     }
 
     // Method to log student data
-    public function logStudent($name)
+    public function logStudent(string $name):void
     {
         // Read existing student data from the JSON file
         $studentsData = $this->readJsonFile($this->jsonFileStudentLogger);
@@ -106,13 +111,13 @@ class StudentLogger
         $this->writeJsonFile($this->jsonFileStudentLogger, $studentsData);
     }
 
-    private function readJsonFile($filename)
+    private function readJsonFile(string $filename): array
     {
         $jsonString = file_get_contents($filename);
         return json_decode($jsonString, true);
     }
 
-    private function writeJsonFile($filename, $data)
+    private function writeJsonFile(string $filename, array $data):void
     {
         $myJsonString = json_encode($data, JSON_PRETTY_PRINT);
         file_put_contents($filename, $myJsonString);
@@ -120,10 +125,10 @@ class StudentLogger
 }
 
 // Function to display data froom allArrivals.json
-function getDatas($jsonFilePath)
+function getDatas(string $jsonFilePath): void
 {
     $jsonData = file_get_contents($jsonFilePath);
-    $output = json_decode($jsonData, true) ?: [];//Null coalescing operator again
+    $output = json_decode($jsonData, true) ?: []; //Null coalescing operator again
 
     foreach ($output as $x) {
         echo $x['time'] . " " . $x['name'] . " " . $x['status'];
